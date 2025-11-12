@@ -46,16 +46,8 @@ FCReturnCode I2CBus::open()
 FCReturnCode I2CBus::close()
 {
     if (fd_ >= 0)
-    {
-        if (::close(fd_) < 0)
-        {
-            LOG_ERROR("Failed to close I2C bus %d: %s", busNumber_, strerror(errno));
-            return FAILED;
-        }
-
-        LOG_DEBUG("Closed I2C bus %d", busNumber_);
-        fd_ = -1;
-    }
+        CHECK_PRINT_RET(::close(fd_) < 0, FAILED,
+                        "Failed to close I2C bus %d: %s", busNumber_, strerror(errno));
 
     return SUCCESS;
 }
