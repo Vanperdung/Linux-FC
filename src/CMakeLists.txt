@@ -1,5 +1,5 @@
 set(PROJECT_SRCS
-    main.cpp
+    Main.cpp
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE 

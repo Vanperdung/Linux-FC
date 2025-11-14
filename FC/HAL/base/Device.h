@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <functional>
 
-#include "utils/types.h"
+#include "utils/Types.h"
 
 namespace FC
 {
@@ -12,7 +12,7 @@ namespace HAL
 namespace Base
 {
 
-class Device    
+class Device
 {
 public:
     enum Speed
@@ -21,22 +21,37 @@ public:
         SPEED_HIGH
     };
 
-    using PeriodCallback = std::function<FCReturnCode(void*)>;
+    using Functor = std::function<void(void*)>;
 
     Device() = default;
     virtual ~Device() = default;
 
     virtual FCReturnCode lock() { return UNSUPPORTED; }
     virtual FCReturnCode unlock() { return UNSUPPORTED; }
-    
-    virtual FCReturnCode transfer(const uint8_t *txBuffer, uint32_t txSize, 
-                                  uint8_t *rxBuffer, uint32_t rxSize)
-                                  { return UNSUPPORTED; }
-    virtual FCReturnCode transferFullDuplex(const uint8_t *txBuffer, 
+
+    virtual FCReturnCode transfer(const uint8_t *txBuffer, uint32_t txSize,
+                                    uint8_t *rxBuffer, uint32_t rxSize)
+    {
+        return UNSUPPORTED;
+    }
+    virtual FCReturnCode transferFullDuplex(const uint8_t *txBuffer,
                                             uint8_t *rxBuffer, uint32_t size)
-                                            { return UNSUPPORTED; }
-    virtual FCReturnCode registerPeriodCallback(PeriodCallback callback, void *context)
-                                            { return UNSUPPORTED; }
+    {
+        return UNSUPPORTED;
+    }
+
+    /**
+     * @brief Register a periodic callback function.
+     * Some I2C devices may need periodic actions, such as polling the FIFO to 
+     * avoid overflow. This function allows us to register a callback function
+     * that will be called periodically.
+     */
+    virtual FCReturnCode registerPeriodicCallback(Functor callback, 
+                                                  void *context,
+                                                  uint32_t intervalNs)
+    {
+        return UNSUPPORTED;
+    }
 
     virtual FCReturnCode setSpeed(Speed speed) { return UNSUPPORTED; }
     virtual FCReturnCode setAddress(uint8_t address) { return UNSUPPORTED; }

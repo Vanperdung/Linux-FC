@@ -1,8 +1,8 @@
 #include "I2CManager.h"
 
 #define LOG_LEVEL LOG_INFO_LEVEL
-#include "utils/logger.h"
-#include "utils/guard.h"
+#include "utils/Logger.h"
+#include "utils/Guard.h"
 
 using namespace FC;
 using namespace FC::HAL;
@@ -20,7 +20,7 @@ I2CManager::I2CManager()
 
 I2CManager::~I2CManager()
 {
-    buses_.clear();
+    cleanup();
 }
 
 I2CDevice *I2CManager::createDevice(int busNumber)
@@ -51,4 +51,14 @@ I2CDevice *I2CManager::createDevice(int busNumber)
                     "Failed to allocate I2C device on bus %d", busNumber);
 
     return newI2CDevice;
+}
+
+FCReturnCode I2CManager::cleanup()
+{
+    for (auto bus : buses_)
+        CHECK_RET(bus->close() != SUCCESS, FAILED);
+
+    buses_.clear();
+
+    return SUCCESS;
 }
