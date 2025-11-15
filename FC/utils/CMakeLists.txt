@@ -1,5 +1,5 @@
 set(FC_UTILS_SRCS
-    logger.cpp
+    Logger.cpp
 )
 
 add_library(FC-utils STATIC 

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 
-#include "mutex.h"
-#include "utils/types.h"
+#include "Mutex.h"
+#include "EpollThread.h"
+#include "utils/Types.h"
 
 namespace FC
 {
@@ -11,7 +13,6 @@ namespace HAL
 {
 namespace Linux
 {
-
 
 /**
  * @brief A dedicated class to manage I2C bus operations on Linux.
@@ -21,10 +22,13 @@ namespace Linux
 class I2CBus
 {
 public:
+    using Functor = std::function<void(void*)>;
+
     I2CBus(int busNumber = -1);
     ~I2CBus();
 
     FCReturnCode open();
+    FCReturnCode close();
 
     int getBusNumber() const { return busNumber_; }
 
@@ -48,13 +52,16 @@ public:
     FCReturnCode transfer(uint8_t targetAddress, 
                           const uint8_t *txBuffer, uint32_t txSize, 
                           uint8_t *rxBuffer, uint32_t rxSize);
+
+    FCReturnCode registerPeriodicCallback(int timerFd,
+                                          Functor callback,
+                                          void *context);
     
 private:
-    FCReturnCode close();
-
     int busNumber_;
     int fd_;
     Mutex lock_;
+    EpollThread poller_;
 };
 
 }

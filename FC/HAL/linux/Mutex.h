@@ -2,7 +2,7 @@
 
 #include <pthread.h>
 
-#include "utils/types.h"
+#include "utils/Types.h"
 
 namespace FC
 {

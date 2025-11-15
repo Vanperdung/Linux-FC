@@ -1,7 +1,7 @@
 #include "I2CBus.h"
 
 #include <string>
-#include <string.h>
+#include <cstring>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -11,8 +11,8 @@
 #include <linux/i2c.h>
 
 #define LOG_LEVEL LOG_INFO_LEVEL
-#include "utils/logger.h"
-#include "utils/guard.h"
+#include "utils/Logger.h"
+#include "utils/Guard.h"
 
 using namespace FC;
 using namespace FC::HAL;
@@ -40,11 +40,13 @@ FCReturnCode I2CBus::open()
 
     LOG_DEBUG("Opened I2C bus %d (%s)", busNumber_, deviceFile.c_str());
 
-    return SUCCESS;
+    return poller_.start();
 }
 
 FCReturnCode I2CBus::close()
 {
+    CHECK_RET(poller_.stop() != SUCCESS, FAILED);
+
     if (fd_ >= 0)
         CHECK_PRINT_RET(::close(fd_) < 0, FAILED,
                         "Failed to close I2C bus %d: %s", busNumber_, strerror(errno));
@@ -93,4 +95,13 @@ FCReturnCode I2CBus::transfer(uint8_t targetAddress,
                     "I2C transfer failed: %s", strerror(errno));
 
     return SUCCESS;
+}
+
+FCReturnCode I2CBus::registerPeriodicCallback(int slotFd,
+                                              Functor callback,
+                                              void *context)
+{
+    EpollSlot slot(std::bind(callback, context));
+
+    return poller_.registerSlot(slotFd, slot);
 }
