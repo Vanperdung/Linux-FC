@@ -5,7 +5,7 @@
 
 #include "I2CDevice.h"
 #include "I2CBus.h"
-#include "utils/types.h"
+#include "utils/Types.h"
 
 namespace FC
 {
@@ -14,6 +14,9 @@ namespace HAL
 namespace Linux
 {
 
+/**
+ * @brief A singleton class to manage creation/deletion of I2CBus and I2CDevice instances.
+ */
 class I2CManager
 {
 public:
@@ -22,6 +25,7 @@ public:
     I2CManager &operator=(const I2CManager &) = delete;
 
     I2CDevice *createDevice(int busNumber);
+    FCReturnCode cleanup();
 
 private:
     I2CManager();

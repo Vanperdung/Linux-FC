@@ -1,4 +1,4 @@
-#include "mutex.h"
+#include "Mutex.h"
 
 using namespace FC;
 using namespace FC::HAL;
