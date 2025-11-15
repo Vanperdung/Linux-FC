@@ -61,7 +61,7 @@ void EpollThread::poll()
 
         if (numEvents_ < 0)
         {
-            LOG_WARNING("Unexpected behavior: ", strerror(errno));
+            LOG_WARNING("Unexpected behavior: %s", strerror(errno));
             return;
         }
 
@@ -127,7 +127,7 @@ FCReturnCode EpollThread::unregisterSlot(int slotFd)
         CHECK_RET(removeEvent(slotFd) != SUCCESS, FAILED);
 
         slotMap_.erase(slotFd);
-        numRegisteredSlots_++;
+        numRegisteredSlots_--;
         return SUCCESS;
     }
 
