@@ -1,7 +1,5 @@
 #include "Logger.h"
 
-using namespace FC;
-
 Logger::LogFuncType Logger::logFunc = nullptr;
 
 void Logger::printLog(const char *level, const char *fmt, ...)
