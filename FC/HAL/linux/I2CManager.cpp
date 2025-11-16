@@ -23,7 +23,7 @@ I2CManager::~I2CManager()
     cleanup();
 }
 
-I2CDevice *I2CManager::createDevice(int busNumber)
+std::unique_ptr<Base::Device> I2CManager::createDevice(int busNumber)
 {
     std::shared_ptr<I2CBus> bus = nullptr;
 
@@ -46,11 +46,8 @@ I2CDevice *I2CManager::createDevice(int busNumber)
         buses_.emplace_back(bus);
     }
 
-    I2CDevice *newI2CDevice = new I2CDevice(bus);
-    CHECK_PRINT_RET(newI2CDevice == nullptr, nullptr,
-                    "Failed to allocate I2C device on bus %d", busNumber);
-
-    return newI2CDevice;
+    std::unique_ptr<Base::Device> device = std::make_unique<I2CDevice>(bus);
+    return device;
 }
 
 FCReturnCode I2CManager::cleanup()

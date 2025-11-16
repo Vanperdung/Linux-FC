@@ -24,7 +24,7 @@ public:
     I2CManager(const I2CManager &) = delete;
     I2CManager &operator=(const I2CManager &) = delete;
 
-    I2CDevice *createDevice(int busNumber);
+    std::unique_ptr<Base::Device> createDevice(int busNumber);
     FCReturnCode cleanup();
 
 private:
