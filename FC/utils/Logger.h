@@ -5,9 +5,6 @@
 #include <cstdint>
 #include <functional>
 
-namespace FC
-{
-
 class Logger
 {
 public:
@@ -20,8 +17,6 @@ private:
     static LogFuncType logFunc;
 };
 
-}
-
 #define LOG_ERROR_LEVEL (0)
 #define LOG_WARNING_LEVEL (1)
 #define LOG_INFO_LEVEL (2)
@@ -32,12 +27,12 @@ private:
 #endif
 
 #if LOG_LEVEL >= LOG_ERROR_LEVEL
-#define LOG_ERROR(fmt, ...)                                      \
-    do                                                           \
-    {                                                            \
-        FC::Logger::printLog("ERROR", "[%s:%d]"                  \
-                                      "\r\n" fmt,                \
-                             __FILE__, __LINE__, ##__VA_ARGS__); \
+#define LOG_ERROR(fmt, ...)                                  \
+    do                                                       \
+    {                                                        \
+        Logger::printLog("ERROR", "[%s:%d]"                  \
+                                  "\r\n" fmt,                \
+                         __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
 #define LOG_ERROR(fmt, ...) \
@@ -47,12 +42,12 @@ private:
 #endif
 
 #if LOG_LEVEL >= LOG_WARNING_LEVEL
-#define LOG_WARNING(fmt, ...)                                    \
-    do                                                           \
-    {                                                            \
-        FC::Logger::printLog("WARNING", "[%s:%d]"                \
-                                        "\r\n" fmt,              \
-                             __FILE__, __LINE__, ##__VA_ARGS__); \
+#define LOG_WARNING(fmt, ...)                                \
+    do                                                       \
+    {                                                        \
+        Logger::printLog("WARNING", "[%s:%d]"                \
+                                    "\r\n" fmt,              \
+                         __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
 #define LOG_WARNING(fmt, ...) \
@@ -62,12 +57,12 @@ private:
 #endif
 
 #if LOG_LEVEL >= LOG_INFO_LEVEL
-#define LOG_INFO(fmt, ...)                                       \
-    do                                                           \
-    {                                                            \
-        FC::Logger::printLog("INFO", "[%s:%d]"                   \
-                                     "\r\n" fmt,                 \
-                             __FILE__, __LINE__, ##__VA_ARGS__); \
+#define LOG_INFO(fmt, ...)                                   \
+    do                                                       \
+    {                                                        \
+        Logger::printLog("INFO", "[%s:%d]"                   \
+                                 "\r\n" fmt,                 \
+                         __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
 #define LOG_INFO(fmt, ...) \
@@ -77,12 +72,12 @@ private:
 #endif
 
 #if LOG_LEVEL >= LOG_DEBUG_LEVEL
-#define LOG_DEBUG(fmt, ...)                                      \
-    do                                                           \
-    {                                                            \
-        FC::Logger::printLog("DEBUG", "[%s:%d]"                  \
-                                      "\r\n" fmt,                \
-                             __FILE__, __LINE__, ##__VA_ARGS__); \
+#define LOG_DEBUG(fmt, ...)                                  \
+    do                                                       \
+    {                                                        \
+        Logger::printLog("DEBUG", "[%s:%d]"                  \
+                                  "\r\n" fmt,                \
+                         __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
 #define LOG_DEBUG(fmt, ...) \
