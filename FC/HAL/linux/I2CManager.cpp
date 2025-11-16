@@ -46,7 +46,14 @@ std::unique_ptr<Base::Device> I2CManager::createDevice(int busNumber)
         buses_.emplace_back(bus);
     }
 
-    std::unique_ptr<Base::Device> device = std::make_unique<I2CDevice>(bus);
+    /**
+     * By default, std::make_unique will throw a std::bad_alloc exception on 
+     * allocation failure. Using std::nothrow to ignore it.
+     */
+    std::unique_ptr<Base::Device> device = 
+            std::unique_ptr<Base::Device>(new(std::nothrow) I2CDevice(bus));
+    CHECK_PRINT_RET(!device, nullptr, "Failed to allocate I2C device on bus %d", busNumber);
+
     return device;
 }
 
