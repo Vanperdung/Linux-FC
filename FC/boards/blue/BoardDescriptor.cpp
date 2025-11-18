@@ -5,7 +5,7 @@ using namespace FC;
 const BoardDescriptor &BoardDescriptor::getInstance()
 {
     static const BoardDescriptor instance = []() -> BoardDescriptor {
-        static BoardDescriptor instance;
+        BoardDescriptor instance;
 
         instance.imu = ImuSensorBackend::MPU9250;
 
