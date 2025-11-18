@@ -32,8 +32,8 @@ FCReturnCode I2CDevice::getAddress(uint8_t &address)
     return SUCCESS;
 }
 
-FCReturnCode I2CDevice::transfer(const uint8_t *txBuffer, uint32_t txSize,
-                                 uint8_t *rxBuffer, uint32_t rxSize)
+FCReturnCode I2CDevice::transfer(const uint8_t *tx_buffer, uint32_t tx_size,
+                                 uint8_t *rx_buffer, uint32_t rx_size)
 {
     // Lock the bus to get the shared_ptr to I2CBus
     std::shared_ptr<I2CBus> bus = bus_.lock();
@@ -41,17 +41,17 @@ FCReturnCode I2CDevice::transfer(const uint8_t *txBuffer, uint32_t txSize,
     CHECK_PRINT_RET(bus == nullptr, FAILED,
                     "I2C bus is not available for transfer");
 
-    return bus->transfer(address_, txBuffer, txSize, rxBuffer, rxSize);
+    return bus->transfer(address_, tx_buffer, tx_size, rx_buffer, rx_size);
 }
 
 FCReturnCode I2CDevice::registerPeriodicCallback(Functor callback, 
                                                  void *context,
-                                                 uint32_t intervalNs)
+                                                 uint32_t interval_ns)
 {
     if (timer_.getFd() < 0)
     {
         // Timer for this I2C device has not started yet
-        CHECK_RET(timer_.start(intervalNs) != SUCCESS, FAILED);
+        CHECK_RET(timer_.start(interval_ns) != SUCCESS, FAILED);
     }
 
     std::shared_ptr<I2CBus> bus = bus_.lock();

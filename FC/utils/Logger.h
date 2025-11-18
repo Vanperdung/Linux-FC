@@ -14,7 +14,7 @@ public:
     static void registerLogFunc(LogFuncType func);
 
 private:
-    static LogFuncType logFunc;
+    static LogFuncType log_func;
 };
 
 #define LOG_ERROR_LEVEL (0)

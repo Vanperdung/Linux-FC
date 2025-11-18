@@ -15,7 +15,9 @@ namespace Linux
 {
 
 /**
- * @brief A singleton class to manage creation/deletion of I2CBus and I2CDevice instances.
+ * @brief A singleton class to manage creation/deletion of I2CBus.
+ * The I2CDevice instances are only created by I2CManager, if not it cannot
+ * access the I2CBus instance for the communitation with off-chip peripherals.
  */
 class I2CManager
 {
@@ -24,7 +26,7 @@ public:
     I2CManager(const I2CManager &) = delete;
     I2CManager &operator=(const I2CManager &) = delete;
 
-    std::unique_ptr<Base::Device> createDevice(int busNumber);
+    std::unique_ptr<Base::Device> createDevice(int bus_number);
     FCReturnCode cleanup();
 
 private:

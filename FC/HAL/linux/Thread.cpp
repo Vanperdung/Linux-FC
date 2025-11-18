@@ -10,10 +10,10 @@ using namespace FC;
 using namespace FC::HAL;
 using namespace FC::HAL::Linux;
 
-Thread::Thread(Functor actualTask)
+Thread::Thread(Functor actual_task)
     : thread_(0),
       running_(false),
-      actualTask_(std::move(actualTask))
+      actual_task_(std::move(actual_task))
 {
 }
 
@@ -25,15 +25,15 @@ Thread::~Thread()
 void *Thread::routine(void *arg)
 {
     Thread *thread = reinterpret_cast<Thread *>(arg);
-    if (thread && thread->actualTask_)
-        thread->actualTask_();
+    if (thread && thread->actual_task_)
+        thread->actual_task_();
     
     return nullptr;
 }
 
 FCReturnCode Thread::start()
 {
-    CHECK_PRINT_RET(!actualTask_, FAILED, "No task assigned to thread");
+    CHECK_PRINT_RET(!actual_task_, FAILED, "No task assigned to thread");
     CHECK_PRINT_RET(running_, FAILED, "Thread is already running");
 
     int ret = pthread_create(&thread_, nullptr, &Thread::routine, this);

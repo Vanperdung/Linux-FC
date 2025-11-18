@@ -23,13 +23,13 @@ I2CManager::~I2CManager()
     cleanup();
 }
 
-std::unique_ptr<Base::Device> I2CManager::createDevice(int busNumber)
+std::unique_ptr<Base::Device> I2CManager::createDevice(int bus_number)
 {
     std::shared_ptr<I2CBus> bus = nullptr;
 
     for (auto b : buses_)
     {
-        if (b->getBusNumber() == busNumber)
+        if (b->getBusNumber() == bus_number)
         {
             bus = b;
             break;
@@ -38,11 +38,11 @@ std::unique_ptr<Base::Device> I2CManager::createDevice(int busNumber)
 
     if (bus == nullptr)
     {   
-        bus = std::make_shared<I2CBus>(busNumber);
+        bus = std::make_shared<I2CBus>(bus_number);
         CHECK_PRINT_RET(bus == nullptr, nullptr,
-                        "Failed to allocate I2C bus %d", busNumber);
+                        "Failed to allocate I2C bus %d", bus_number);
         CHECK_PRINT_RET(bus->open() != SUCCESS, nullptr,
-                        "Failed to open I2C bus %d", busNumber);
+                        "Failed to open I2C bus %d", bus_number);
         buses_.emplace_back(bus);
     }
 
@@ -52,7 +52,7 @@ std::unique_ptr<Base::Device> I2CManager::createDevice(int busNumber)
      */
     std::unique_ptr<Base::Device> device = 
             std::unique_ptr<Base::Device>(new(std::nothrow) I2CDevice(bus));
-    CHECK_PRINT_RET(!device, nullptr, "Failed to allocate I2C device on bus %d", busNumber);
+    CHECK_PRINT_RET(!device, nullptr, "Failed to allocate I2C device on bus %d", bus_number);
 
     return device;
 }

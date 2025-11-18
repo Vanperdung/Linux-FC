@@ -1,6 +1,6 @@
 #include "Logger.h"
 
-Logger::LogFuncType Logger::logFunc = nullptr;
+Logger::LogFuncType Logger::log_func = nullptr;
 
 void Logger::printLog(const char *level, const char *fmt, ...)
 {
@@ -12,11 +12,11 @@ void Logger::printLog(const char *level, const char *fmt, ...)
     n += vsnprintf(buffer + n, sizeof(buffer) - n, fmt, args);
     va_end(args);
 
-    if (logFunc)
-        logFunc(reinterpret_cast<uint8_t *>(buffer), static_cast<uint16_t>(n));
+    if (log_func)
+        log_func(reinterpret_cast<uint8_t *>(buffer), static_cast<uint16_t>(n));
 }
 
 void Logger::registerLogFunc(Logger::LogFuncType func)
 {
-    logFunc = func;
+    log_func = func;
 }
