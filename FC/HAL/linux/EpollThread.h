@@ -19,8 +19,8 @@ public:
 
     friend class EpollThread;
 
-    EpollSlot(Functor readCb = nullptr, Functor writeCb = nullptr,
-              Functor errorCb = nullptr, Functor hangUpCb = nullptr);
+    EpollSlot(Functor read_cb = nullptr, Functor write_cb = nullptr,
+              Functor error_cb = nullptr, Functor hangup_cb = nullptr);
     ~EpollSlot();
 
     /* 
@@ -56,10 +56,10 @@ public:
     FCReturnCode onHangUp();
 
 private:
-    Functor readCb_;
-    Functor writeCb_;
-    Functor errorCb_;
-    Functor hangUpCb_;
+    Functor read_cb_;
+    Functor write_cb_;
+    Functor error_cb_;
+    Functor hangup_cb_;
 };
 
 class EpollThread : public Thread
@@ -71,18 +71,18 @@ public:
     FCReturnCode start();
     FCReturnCode stop();
 
-    FCReturnCode registerSlot(int slotFd, EpollSlot slot);
-    FCReturnCode unregisterSlot(int slotFd);
+    FCReturnCode registerSlot(int slot_fd, EpollSlot slot);
+    FCReturnCode unregisterSlot(int slot_fd);
 
 private:
     void poll();
-    FCReturnCode addEvent(int slotFd, const EpollSlot &slot);
-    FCReturnCode removeEvent(int slotFd);
+    FCReturnCode addEvent(int slot_fd, const EpollSlot &slot);
+    FCReturnCode removeEvent(int slot_fd);
     
     int fd_;
-    bool pollShouldStop_;
-    uint8_t numRegisteredSlots_;
-    std::unordered_map<int, EpollSlot> slotMap_;
+    bool poll_should_stop_;
+    uint8_t num_registered_slots_;
+    std::unordered_map<int, EpollSlot> slot_map_;
 };
 
 }

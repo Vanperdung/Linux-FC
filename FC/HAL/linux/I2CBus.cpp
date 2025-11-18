@@ -18,9 +18,9 @@ using namespace FC;
 using namespace FC::HAL;
 using namespace FC::HAL::Linux;
 
-I2CBus::I2CBus(int busNumber)
+I2CBus::I2CBus(int bus_number)
     : fd_(-1),
-      busNumber_(busNumber)
+      bus_number_(bus_number)
 {
 }
 
@@ -31,14 +31,14 @@ I2CBus::~I2CBus()
 
 FCReturnCode I2CBus::open()
 {
-    CHECK_PRINT_RET(busNumber_ < 0, FAILED, "Invalid I2C bus number: %d", busNumber_);
+    CHECK_PRINT_RET(bus_number_ < 0, FAILED, "Invalid I2C bus number: %d", bus_number_);
 
-    std::string deviceFile = "/dev/i2c-" + std::to_string(busNumber_);
-    fd_ = ::open(deviceFile.c_str(), O_RDWR);
-    CHECK_PRINT_RET(fd_ < 0, FAILED, "Failed to open %s: %s", deviceFile.c_str(),
+    std::string device_file = "/dev/i2c-" + std::to_string(bus_number_);
+    fd_ = ::open(device_file.c_str(), O_RDWR);
+    CHECK_PRINT_RET(fd_ < 0, FAILED, "Failed to open %s: %s", device_file.c_str(),
                     strerror(errno));
 
-    LOG_DEBUG("Opened I2C bus %d (%s)", busNumber_, deviceFile.c_str());
+    LOG_DEBUG("Opened I2C bus %d (%s)", bus_number_, device_file.c_str());
 
     return poller_.start();
 }
@@ -49,59 +49,59 @@ FCReturnCode I2CBus::close()
 
     if (fd_ >= 0)
         CHECK_PRINT_RET(::close(fd_) < 0, FAILED,
-                        "Failed to close I2C bus %d: %s", busNumber_, strerror(errno));
+                        "Failed to close I2C bus %d: %s", bus_number_, strerror(errno));
 
     return SUCCESS;
 }
 
-FCReturnCode I2CBus::transfer(uint8_t targetAddress,
-                              const uint8_t *txBuffer, uint32_t txSize,
-                              uint8_t *rxBuffer, uint32_t rxSize)
+FCReturnCode I2CBus::transfer(uint8_t target_address,
+                              const uint8_t *tx_buffer, uint32_t tx_size,
+                              uint8_t *rx_buffer, uint32_t rx_size)
 {
-    CHECK_PRINT_RET(fd_ < 0, FAILED, "I2C bus %d is not opened", busNumber_);
-    CHECK_PRINT_RET(targetAddress >= 128, FAILED,
-                    "Invalid I2C target address: 0x%02X", targetAddress);
+    CHECK_PRINT_RET(fd_ < 0, FAILED, "I2C bus %d is not opened", bus_number_);
+    CHECK_PRINT_RET(target_address >= 128, FAILED,
+                    "Invalid I2C target address: 0x%02X", target_address);
 
     struct i2c_msg messages[2];
     int count = 0;
 
-    if (txBuffer != nullptr && txSize > 0)
+    if (tx_buffer != nullptr && tx_size > 0)
     {
-        messages[count].addr = targetAddress;
+        messages[count].addr = target_address;
         messages[count].flags = 0; // Write
-        messages[count].len = static_cast<__u16>(txSize);
-        messages[count].buf = const_cast<__u8 *>(txBuffer);
+        messages[count].len = static_cast<__u16>(tx_size);
+        messages[count].buf = const_cast<__u8 *>(tx_buffer);
         count++;
     }
 
-    if (rxBuffer != nullptr && rxSize > 0)
+    if (rx_buffer != nullptr && rx_size > 0)
     {
-        messages[count].addr = targetAddress;
+        messages[count].addr = target_address;
         messages[count].flags = I2C_M_RD; // Read
-        messages[count].len = static_cast<__u16>(rxSize);
-        messages[count].buf = const_cast<__u8 *>(rxBuffer);
+        messages[count].len = static_cast<__u16>(rx_size);
+        messages[count].buf = const_cast<__u8 *>(rx_buffer);
         count++;
     }
 
     CHECK_PRINT_RET(count == 0, FAILED,
-                    "No data to transfer for I2C address 0x%02X", targetAddress);
+                    "No data to transfer for I2C address 0x%02X", target_address);
 
-    struct i2c_rdwr_ioctl_data rdwrData;
+    struct i2c_rdwr_ioctl_data rdwr_data;
 
-    rdwrData.msgs = messages;
-    rdwrData.nmsgs = count;
+    rdwr_data.msgs = messages;
+    rdwr_data.nmsgs = count;
 
-    CHECK_PRINT_RET(::ioctl(fd_, I2C_RDWR, &rdwrData) < 0, FAILED,
+    CHECK_PRINT_RET(::ioctl(fd_, I2C_RDWR, &rdwr_data) < 0, FAILED,
                     "I2C transfer failed: %s", strerror(errno));
 
     return SUCCESS;
 }
 
-FCReturnCode I2CBus::registerPeriodicCallback(int slotFd,
+FCReturnCode I2CBus::registerPeriodicCallback(int slot_fd,
                                               Functor callback,
                                               void *context)
 {
     EpollSlot slot(std::bind(callback, context));
 
-    return poller_.registerSlot(slotFd, slot);
+    return poller_.registerSlot(slot_fd, slot);
 }

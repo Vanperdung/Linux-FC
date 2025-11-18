@@ -30,12 +30,12 @@ public:
     FCReturnCode setAddress(uint8_t address) override;
     FCReturnCode getAddress(uint8_t &address) override;
 
-    FCReturnCode transfer(const uint8_t *txBuffer, uint32_t txSize,
-                          uint8_t *rxBuffer, uint32_t rxSize) override;
+    FCReturnCode transfer(const uint8_t *tx_buffer, uint32_t tx_size,
+                          uint8_t *rx_buffer, uint32_t rx_size) override;
     
     FCReturnCode registerPeriodicCallback(Functor callback, 
                                           void *context,
-                                          uint32_t intervalNs) override;
+                                          uint32_t interval_ns) override;
 
 private:
     std::weak_ptr<I2CBus> bus_; // Use weak_ptr to avoid circular reference

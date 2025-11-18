@@ -24,13 +24,13 @@ TimerFd::~TimerFd()
     stop();
 }
 
-FCReturnCode TimerFd::start(uint32_t intervalNs)
+FCReturnCode TimerFd::start(uint32_t interval_ns)
 {
     fd_ = ::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     CHECK_PRINT_RET(fd_ < 0, FAILED, 
                     "Failed to create timerfd instance: %s", strerror(errno));
 
-    if (setInterval(intervalNs) != SUCCESS)
+    if (setInterval(interval_ns) != SUCCESS)
     {
         ::close(fd_);
         fd_ = -1;
@@ -41,7 +41,7 @@ FCReturnCode TimerFd::start(uint32_t intervalNs)
     return SUCCESS;
 }
 
-FCReturnCode TimerFd::setInterval(uint32_t intervalNs)
+FCReturnCode TimerFd::setInterval(uint32_t interval_ns)
 {
     CHECK_PRINT_RET(fd_ < 0, FAILED, "The timerfd instance is not created yet");
 
@@ -49,11 +49,11 @@ FCReturnCode TimerFd::setInterval(uint32_t intervalNs)
 
     // Interval for the first expiration
     interval.it_value.tv_sec = 0;
-    interval.it_value.tv_nsec = intervalNs; 
+    interval.it_value.tv_nsec = interval_ns; 
     
     // Interval for the next expirations after the first expiration
     interval.it_interval.tv_sec = 0;
-    interval.it_interval.tv_nsec = intervalNs;
+    interval.it_interval.tv_nsec = interval_ns;
 
     int ret = ::timerfd_settime(fd_, 0, &interval, nullptr);
     CHECK_PRINT_RET(ret < 0, FAILED, 

@@ -24,13 +24,13 @@ class I2CBus
 public:
     using Functor = std::function<void(void*)>;
 
-    I2CBus(int busNumber = -1);
+    I2CBus(int bus_number = -1);
     ~I2CBus();
 
     FCReturnCode open();
     FCReturnCode close();
 
-    int getBusNumber() const { return busNumber_; }
+    int getBusNumber() const { return bus_number_; }
 
     FCReturnCode acquire() { return lock_.lock(); }
     FCReturnCode release() { return lock_.unlock(); }
@@ -38,27 +38,27 @@ public:
     /**
      * @brief This function performs an I2C transfer to the specified target address.
      * An I2C transfer can consist of a TX operation followed by a RX operation.
-     * If txBuffer and txSize are non-zero, a TX operation is performed.
-     * If rxBuffer and rxSize are non-zero, a RX operation is performed.
+     * If tx_buffer and tx_size are non-zero, a TX operation is performed.
+     * If rx_buffer and rx_size are non-zero, a RX operation is performed.
      * If none of TX or RX is performed, the function returns FCReturnCode::FAILED.
      * 
-     * @param targetAddress The I2C address of the target device.
-     * @param txBuffer Pointer to the data to be transmitted.
-     * @param txSize Size of the data to be transmitted in bytes.
-     * @param rxBuffer Pointer to the buffer to store received data.
-     * @param rxSize Size of the data to be received in bytes.
+     * @param target_address The I2C address of the target device.
+     * @param tx_buffer Pointer to the data to be transmitted.
+     * @param tx_size Size of the data to be transmitted in bytes.
+     * @param rx_buffer Pointer to the buffer to store received data.
+     * @param rx_size Size of the data to be received in bytes.
      * @return FCReturnCode indicating success or failure of the operation.
      */
-    FCReturnCode transfer(uint8_t targetAddress, 
-                          const uint8_t *txBuffer, uint32_t txSize, 
-                          uint8_t *rxBuffer, uint32_t rxSize);
+    FCReturnCode transfer(uint8_t target_address, 
+                          const uint8_t *tx_buffer, uint32_t tx_size, 
+                          uint8_t *rx_buffer, uint32_t rx_size);
 
-    FCReturnCode registerPeriodicCallback(int timerFd,
+    FCReturnCode registerPeriodicCallback(int slot_fd,
                                           Functor callback,
                                           void *context);
     
 private:
-    int busNumber_;
+    int bus_number_;
     int fd_;
     Mutex lock_;
     EpollThread poller_;

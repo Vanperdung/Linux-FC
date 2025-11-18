@@ -18,7 +18,7 @@ class Thread
 protected:
     using Functor = std::function<void(void)>;
 
-    Thread(Functor actualTask);
+    Thread(Functor actual_task);
     virtual ~Thread();
 
     FCReturnCode start();
@@ -29,7 +29,7 @@ private:
 
     pthread_t thread_;
     bool running_;
-    Functor actualTask_;
+    Functor actual_task_;
 };
 
 }

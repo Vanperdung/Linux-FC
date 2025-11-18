@@ -17,9 +17,9 @@ public:
     TimerFd();
     ~TimerFd();
 
-    FCReturnCode start(uint32_t intervalNs);
+    FCReturnCode start(uint32_t interval_ns);
     void stop();
-    FCReturnCode setInterval(uint32_t intervalNs);
+    FCReturnCode setInterval(uint32_t interval_ns);
 
     int getFd() const { return fd_; }
 

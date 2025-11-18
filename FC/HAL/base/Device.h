@@ -29,13 +29,13 @@ public:
     virtual FCReturnCode lock() { return UNSUPPORTED; }
     virtual FCReturnCode unlock() { return UNSUPPORTED; }
 
-    virtual FCReturnCode transfer(const uint8_t *txBuffer, uint32_t txSize,
-                                    uint8_t *rxBuffer, uint32_t rxSize)
+    virtual FCReturnCode transfer(const uint8_t *tx_buffer, uint32_t tx_size,
+                                    uint8_t *rx_buffer, uint32_t rx_size)
     {
         return UNSUPPORTED;
     }
-    virtual FCReturnCode transferFullDuplex(const uint8_t *txBuffer,
-                                            uint8_t *rxBuffer, uint32_t size)
+    virtual FCReturnCode transferFullDuplex(const uint8_t *tx_buffer,
+                                            uint8_t *rx_buffer, uint32_t size)
     {
         return UNSUPPORTED;
     }
@@ -48,7 +48,7 @@ public:
      */
     virtual FCReturnCode registerPeriodicCallback(Functor callback, 
                                                   void *context,
-                                                  uint32_t intervalNs)
+                                                  uint32_t interval_ns)
     {
         return UNSUPPORTED;
     }
