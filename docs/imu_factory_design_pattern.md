@@ -14,7 +14,7 @@ The problem is the `ImuXXX`: we may have many sensor types, each one has its own
 We need an efficient way to produce the `ImuXXX` instance and resolve the above problem =>  Use the idea of factory method design pattern.
 
 Here are the key ideas:
-- Whenever we declare the class of `ImuXXX`, we must call a macro (`REGISTER_IMU_BACKEND(class, type)`) to automatically create a static `ImuBackendFactory` instance to avoid naming conflict.
-- The class of `ImuBackendFactory` must be template class. The type of template class is the type of `ImuXXX` and can be specified when calling `REGISTER_IMU_BACKEND` macro.
-- `ImuBackendFactory` instance is responsible for creating the corresponding `ImuXXX` instance based on the specifed `type` from `REGISTER_IMU_BACKEND`.
-- Due to `ImuBackendFactory` instance is a static instance, so we can't access it directly from other cpp files. We need to store the address to this instace while creating. Therefore, `ImuBackendFactory` class must inherit the `ImuBackendFactoryBase` class which contains a list of pointer pointing to `ImuBackendFactory` instance. In other cpp files, we just call the static member function `getFactoryInstance` of `ImuBackendFactoryBase` with parameter to find the pointer to your desired `ImuBackendFactory` instance.
+- Whenever we declare a class for an `ImuXXX`, we must call a macro (`REGISTER_IMU_BACKEND(class, type)`) to automatically create a corresponding static `ImuBackendFactory` instance.
+- The `ImuBackendFactory` class is a template class. The template argument is the type of the `ImuXXX` class, specified when calling the `REGISTER_IMU_BACKEND` macro.
+- Each `ImuBackendFactory` instance is responsible for creating the corresponding `ImuXXX` instance based on the `type` specified in `REGISTER_IMU_BACKEND`.
+- Since each `ImuBackendFactory` is a static instance (with internal linkage), it cannot be accessed directly from other translation units. To solve this, we store a pointer to each factory instance upon its creation. `ImuBackendFactory` inherits from a common `ImuBackendFactoryBase` class, which maintains a list of pointers to all created factory instances. To get a specific factory, other parts of the code can call the static member function `getFactoryInstance` on `ImuBackendFactoryBase`, passing the desired type.
