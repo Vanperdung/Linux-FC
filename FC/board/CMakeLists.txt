@@ -9,3 +9,7 @@ endif()
 add_library(FC-board STATIC
     ${FC_BOARD_SRCS}
 )
+
+target_link_libraries(FC-board PRIVATE
+    FC-inc
+)
