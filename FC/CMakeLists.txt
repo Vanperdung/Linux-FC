@@ -6,7 +6,7 @@ target_include_directories(FC-inc INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(boards)
+add_subdirectory(board)
 add_subdirectory(HAL)
 add_subdirectory(utils)
 
