@@ -7,7 +7,7 @@ Let's see our problems with the current IMU design. As I explained, the implemen
 - `ImuBackend`: the interface for the `ImuXXX`, provides unified methods for many kinds of sensor.
 - `ImuSensor`: or frontend, exposes processed/filtered/estimated data to higher layers (attitude, stabilization, controller, logging, etc.).
 
-The problem is the `ImuXXX`: we may have many sensor types, each one has its own `ImuXXX` class. If we use a simple factory function (followed simple factory design pattern) to create the `ImuXXX` instance, this function will be very huge, difficult to maintain and non-readable because it has to contain many `if-else` or `switch-case` blocks. This design also requires to modify the factory function when we add new or remove `ImuXXX`.
+The problem is the `ImuXXX`: we may have many sensor types, each one has its own `ImuXXX` class. If we use a simple factory function (following the simple factory design pattern) to create the `ImuXXX` instance, this function will be very huge, difficult to maintain and unreadable because it has to contain many `if-else` or `switch-case` blocks. This design also requires modifying the factory function when we add or remove an `ImuXXX`.
 
 ## Solution
 
