@@ -30,7 +30,8 @@ jobs:
         cd ${{github.workspace}}/build
         cmake ${{github.workspace}} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/cmake/bbblue_toolchain.cmake \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-          -DFC_BOARD_BLUE=ON
+          -DFC_BOARD_BLUE=ON \
+          -DBUILD_TEST=ON
 
     - name: Build
       # Build your program with the given configuration
