@@ -12,4 +12,5 @@ add_library(FC-board STATIC
 
 target_link_libraries(FC-board PRIVATE
     FC-inc
+    FC-utils
 )

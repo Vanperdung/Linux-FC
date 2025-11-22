@@ -10,7 +10,6 @@
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 
-#define LOG_LEVEL LOG_INFO_LEVEL
 #include "utils/Logger.h"
 #include "utils/Guard.h"
 

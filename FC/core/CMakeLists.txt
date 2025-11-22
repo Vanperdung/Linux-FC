@@ -1,16 +1,9 @@
-set(FC_CORE_SENSOR_SRCS
-    ImuBackend.cpp
-    ImuBackendFactory.cpp
-    ImuMPU9250.cpp
-    ImuSensor.cpp
-)
+add_subdirectory(controller)
+add_subdirectory(sensor)
 
-add_library(FC-sensor STATIC
-    ${FC_CORE_SENSOR_SRCS}
-)
+add_library(FC-core INTERFACE)
 
-target_link_libraries(FC-sensor PRIVATE
-    FC-inc
-    FC-utils
-    FC-board
+target_link_libraries(FC-core INTERFACE
+    FC-controller
+    -Wl,--whole-archive FC-sensor -Wl,--no-whole-archive
 )

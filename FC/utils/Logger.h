@@ -30,8 +30,7 @@ private:
 #define LOG_ERROR(fmt, ...)                                  \
     do                                                       \
     {                                                        \
-        Logger::printLog("ERROR", "[%s:%d]"                  \
-                                  "\r\n" fmt,                \
+        Logger::printLog("ERROR", "[%s:%d]: " fmt "\r\n",    \
                          __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
@@ -45,8 +44,7 @@ private:
 #define LOG_WARNING(fmt, ...)                                \
     do                                                       \
     {                                                        \
-        Logger::printLog("WARNING", "[%s:%d]"                \
-                                    "\r\n" fmt,              \
+        Logger::printLog("WARNING", "[%s:%d]: " fmt "\r\n",  \
                          __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
@@ -60,8 +58,7 @@ private:
 #define LOG_INFO(fmt, ...)                                   \
     do                                                       \
     {                                                        \
-        Logger::printLog("INFO", "[%s:%d]"                   \
-                                 "\r\n" fmt,                 \
+        Logger::printLog("INFO", "[%s:%d]: " fmt "\r\n",     \
                          __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else
@@ -75,8 +72,7 @@ private:
 #define LOG_DEBUG(fmt, ...)                                  \
     do                                                       \
     {                                                        \
-        Logger::printLog("DEBUG", "[%s:%d]"                  \
-                                  "\r\n" fmt,                \
+        Logger::printLog("DEBUG", "[%s:%d]: " fmt "\r\n",    \
                          __FILE__, __LINE__, ##__VA_ARGS__); \
     } while (0)
 #else

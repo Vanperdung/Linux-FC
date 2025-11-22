@@ -7,15 +7,16 @@ target_include_directories(FC-inc INTERFACE
 )
 
 add_subdirectory(board)
+add_subdirectory(core)
 add_subdirectory(HAL)
 add_subdirectory(utils)
 
 add_library(FC-libs INTERFACE)
 
 target_link_libraries(FC-libs INTERFACE
-    # FC-core
-    FC-hal
-    FC-utils
-    FC-inc
     FC-board
+    FC-core
+    FC-hal
+    FC-inc
+    FC-utils
 )

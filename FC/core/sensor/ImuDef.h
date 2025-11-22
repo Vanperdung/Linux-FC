@@ -13,7 +13,7 @@ struct ImuDef
         MPU6000
     };
 
-    enum class Device
+    enum class PhyInterface
     {
         NONE = 0,
         SPI,
@@ -22,15 +22,14 @@ struct ImuDef
 
     enum class BusNumber
     {
-        NONE = 0,
-        BUS0,
+        BUS0 = 0,
         BUS1,
         BUS2,
-        BUS3
+        BUS3,
     };
 
     Type type;
-    Device dev;
+    PhyInterface phy_interface;
     BusNumber bus_number;
 };
 

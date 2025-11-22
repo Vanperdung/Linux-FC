@@ -7,7 +7,6 @@
 #include <errno.h>
 #include <sys/epoll.h>
 
-#define LOG_LEVEL LOG_INFO_LEVEL
 #include "utils/Logger.h"
 #include "utils/Guard.h"
 

@@ -2,7 +2,6 @@
 
 #include <cstring>
 
-#define LOG_LEVEL LOG_INFO_LEVEL
 #include "utils/Logger.h"
 #include "utils/Guard.h"
 

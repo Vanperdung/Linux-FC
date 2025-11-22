@@ -1,6 +1,5 @@
 #include "I2CManager.h"
 
-#define LOG_LEVEL LOG_INFO_LEVEL
 #include "utils/Logger.h"
 #include "utils/Guard.h"
 
@@ -65,4 +64,13 @@ FCReturnCode I2CManager::cleanup()
     buses_.clear();
 
     return SUCCESS;
+}
+
+/**
+ * FIXME: The base layer should not know about concrete implementations
+ * derived from it.
+ */
+Base::I2CManager *Base::I2CManager::getInstance()
+{
+    return &Linux::I2CManager::getInstance();
 }
