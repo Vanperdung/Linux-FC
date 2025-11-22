@@ -12,7 +12,7 @@ namespace HAL
 namespace Base
 {
 
-class Device
+class DeviceInterface
 {
 public:
     enum Speed
@@ -23,8 +23,8 @@ public:
 
     using Functor = std::function<void(void*)>;
 
-    Device() = default;
-    virtual ~Device() = default;
+    DeviceInterface() = default;
+    virtual ~DeviceInterface() = default;
 
     virtual FCReturnCode lock() { return UNSUPPORTED; }
     virtual FCReturnCode unlock() { return UNSUPPORTED; }

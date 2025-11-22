@@ -22,7 +22,7 @@ I2CManager::~I2CManager()
     cleanup();
 }
 
-std::unique_ptr<Base::Device> I2CManager::createDevice(int bus_number)
+std::unique_ptr<Base::DeviceInterface> I2CManager::createDevice(int bus_number)
 {
     std::shared_ptr<I2CBus> bus = nullptr;
 
@@ -49,8 +49,8 @@ std::unique_ptr<Base::Device> I2CManager::createDevice(int bus_number)
      * By default, std::make_unique will throw a std::bad_alloc exception on 
      * allocation failure. Using std::nothrow to ignore it.
      */
-    std::unique_ptr<Base::Device> device = 
-            std::unique_ptr<Base::Device>(new(std::nothrow) I2CDevice(bus));
+    std::unique_ptr<Base::DeviceInterface> device =
+            std::unique_ptr<Base::DeviceInterface>(new(std::nothrow) I2CDevice(bus));
     CHECK_PRINT_RET(!device, nullptr, "Failed to allocate I2C device on bus %d", bus_number);
 
     return device;
@@ -64,13 +64,4 @@ FCReturnCode I2CManager::cleanup()
     buses_.clear();
 
     return SUCCESS;
-}
-
-/**
- * FIXME: The base layer should not know about concrete implementations
- * derived from it.
- */
-Base::I2CManager *Base::I2CManager::getInstance()
-{
-    return &Linux::I2CManager::getInstance();
 }

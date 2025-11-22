@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "TimerFd.h"
-#include "HAL/base/Device.h"
+#include "HAL/base/DeviceInterface.h"
 #include "utils/Types.h"
 
 namespace FC
@@ -19,7 +19,7 @@ class I2CBus;
  * @brief A class representing an I2C device connected to an I2C bus.
  * All the I2C hardware in Linux-based FC platforms should be accessed via this class.
  */
-class I2CDevice : public Base::Device
+class I2CDevice : public Base::DeviceInterface
 {
 public:
     using Functor = std::function<void(void*)>;
