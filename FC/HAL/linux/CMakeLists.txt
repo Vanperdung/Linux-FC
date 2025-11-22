@@ -15,4 +15,5 @@ add_library(FC-linux STATIC
 target_link_libraries(FC-linux PRIVATE
     FC-inc
     FC-utils
+    -lpthread
 )

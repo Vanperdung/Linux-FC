@@ -9,7 +9,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Set the name of project 
-set(CMAKE_PROJECT_NAME Linux-FC)
+set(CMAKE_PROJECT_NAME fc)
 project(${CMAKE_PROJECT_NAME})
 
 # Create an executable target
@@ -24,3 +24,7 @@ add_subdirectory(FC)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE 
     FC-libs
 )
+
+if (BUILD_TEST)
+    add_subdirectory(test)
+endif()

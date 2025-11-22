@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <sys/timerfd.h>
 
-#define LOG_LEVEL LOG_INFO_LEVEL
 #include "utils/Types.h"
 #include "utils/Guard.h"
 

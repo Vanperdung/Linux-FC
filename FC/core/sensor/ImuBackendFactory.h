@@ -8,12 +8,18 @@
 namespace FC
 {
 
+class ImuBackend;
+
 class ImuBackendFactoryBase
 {
 public:
     ImuBackendFactoryBase(ImuDef::Type type);
+    virtual ~ImuBackendFactoryBase() = default;
 
     static ImuBackendFactoryBase *getFactoryInstance(ImuDef::Type type);
+
+    virtual std::unique_ptr<ImuBackend> createInstance(ImuDef::PhyInterface phy_interface,
+                                                       ImuDef::BusNumber bus_number) = 0;
 
 private:
     void registerNewType(ImuDef::Type type);
@@ -29,10 +35,12 @@ public:
         : ImuBackendFactoryBase(type)
     {
     }
+    ~ImuBackendFactory() = default;
 
-    std::unique_ptr<ImuBackendClass> createInstance()
+    std::unique_ptr<ImuBackend> createInstance(ImuDef::PhyInterface phy_interface,
+                                               ImuDef::BusNumber bus_number)
     {
-        return std::make_unique<ImuBackendClass>();
+        return std::make_unique<ImuBackendClass>(phy_interface, bus_number);
     }
 };
 
