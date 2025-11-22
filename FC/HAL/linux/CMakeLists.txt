@@ -1,11 +1,13 @@
 set(FC_HAL_LINUX_SRCS
     EpollThread.cpp
+    HALLinux.cpp
     I2CBus.cpp
     I2CDevice.cpp
     I2CManager.cpp
     Mutex.cpp
     Thread.cpp
     TimerFd.cpp
+    Utils.cpp
 )
 
 add_library(FC-linux STATIC 
