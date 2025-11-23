@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace FC
 {
@@ -16,6 +17,7 @@ public:
     virtual ~UtilsInterface() = default;
 
     virtual void delayMs(uint16_t ms) = 0;
+    virtual void getTimestamp(std::string &timestamp) = 0;
 };
 
 }

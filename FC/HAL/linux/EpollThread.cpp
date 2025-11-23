@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/epoll.h>
+#include <sys/eventfd.h>
 
 #include "utils/Logger.h"
 #include "utils/Guard.h"
@@ -34,9 +35,81 @@ FCReturnCode EpollThread::start()
     fd_ = ::epoll_create1(0);
     CHECK_PRINT_RET(fd_ < 0, FAILED, "Failed to create epoll instance");
 
+    wakeup_fd_ = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    CHECK_PRINT_RET(wakeup_fd_ < 0, FAILED, "Failed to create eventfd for wakeup");
+
+    EpollSlot wakeup_slot = EpollSlot([this]() {
+        // Read and clear the eventfd counter
+        uint64_t counter = 0;
+        ::read(wakeup_fd_, &counter, sizeof(counter));
+    });
+
+    CHECK_RET(registerSlot(wakeup_fd_, wakeup_slot) != SUCCESS, FAILED);
+
     // Create a new thread to run the demultiplexer loop
     poll_should_stop_ = false;
     CHECK_PRINT_RET(Thread::start() != SUCCESS, FAILED, "Failed to start thread");
+
+    return SUCCESS;
+}
+
+FCReturnCode EpollThread::stop()
+{
+    // Stop the demultiplexer loop before cleanup the epoll by waking up
+    wakeup();
+
+    CHECK_PRINT_RET(Thread::join() != SUCCESS, FAILED, "Failed to join thread");
+
+    if (fd_ >= 0)
+        ::close(fd_);
+
+    fd_ = -1;
+
+    return SUCCESS;
+}
+
+void EpollThread::wakeup()
+{
+    poll_should_stop_ = true;
+    uint64_t counter = 1;
+
+    (void)::write(wakeup_fd_, &counter, sizeof(counter));
+}
+
+FCReturnCode EpollThread::registerSlot(int slot_fd, EpollSlot slot)
+{
+    CHECK_PRINT_RET(num_registered_slots_ >= SLOT_CAPACITY - 1, FAILED,
+                    "Reached the maximum of slot");
+    CHECK_PRINT_RET(slot_fd < 0, FAILED, "Invalid fd: %d", slot_fd);
+
+    if (slot_map_.find(slot_fd) == slot_map_.end())
+    {
+        CHECK_RET(addEvent(slot_fd, slot) != SUCCESS, FAILED);
+
+        slot_map_.emplace(slot_fd, std::move(slot));
+        num_registered_slots_++;
+        return SUCCESS;
+    }
+
+    LOG_WARNING("The slot instance (fd: %d) exists", slot_fd);
+
+    return FAILED;
+}
+
+FCReturnCode EpollThread::unregisterSlot(int slot_fd)
+{
+    CHECK_PRINT_RET(slot_fd < 0, FAILED, "Invalid fd: %d", slot_fd);
+
+    if (slot_map_.find(slot_fd) != slot_map_.end())
+    {
+        CHECK_RET(removeEvent(slot_fd) != SUCCESS, FAILED);
+
+        slot_map_.erase(slot_fd);
+        num_registered_slots_--;
+        return SUCCESS;
+    }
+
+    LOG_WARNING("The slot instance (fd: %d) does not exist", slot_fd);
 
     return SUCCESS;
 }
@@ -81,58 +154,6 @@ void EpollThread::poll()
                 slot.onHangUp();
         }
     }
-}
-
-FCReturnCode EpollThread::stop()
-{
-    // Stop the demultiplexer loop before cleanup the epoll
-    poll_should_stop_ = true;
-    CHECK_PRINT_RET(Thread::join() != SUCCESS, FAILED, "Failed to join thread");
-
-    if (fd_ >= 0)
-        ::close(fd_);
-
-    fd_ = -1;
-
-    return SUCCESS;
-}
-
-FCReturnCode EpollThread::registerSlot(int slot_fd, EpollSlot slot)
-{
-    CHECK_PRINT_RET(num_registered_slots_ >= SLOT_CAPACITY - 1, FAILED,
-                    "Reached the maximum of slot");
-    CHECK_PRINT_RET(slot_fd < 0, FAILED, "Invalid fd: %d", slot_fd);
-
-    if (slot_map_.find(slot_fd) == slot_map_.end())
-    {
-        CHECK_RET(addEvent(slot_fd, slot) != SUCCESS, FAILED);
-
-        slot_map_.emplace(slot_fd, std::move(slot));
-        num_registered_slots_++;
-        return SUCCESS;
-    }
-
-    LOG_WARNING("The slot instance (fd: %d) exists", slot_fd);
-
-    return FAILED;
-}
-
-FCReturnCode EpollThread::unregisterSlot(int slot_fd)
-{
-    CHECK_PRINT_RET(slot_fd < 0, FAILED, "Invalid fd: %d", slot_fd);
-
-    if (slot_map_.find(slot_fd) != slot_map_.end())
-    {
-        CHECK_RET(removeEvent(slot_fd) != SUCCESS, FAILED);
-
-        slot_map_.erase(slot_fd);
-        num_registered_slots_--;
-        return SUCCESS;
-    }
-
-    LOG_WARNING("The slot instance (fd: %d) does not exist", slot_fd);
-
-    return SUCCESS;
 }
 
 FCReturnCode EpollThread::addEvent(int slot_fd, const EpollSlot &slot)

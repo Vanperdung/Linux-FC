@@ -50,6 +50,8 @@ FCReturnCode I2CBus::close()
         CHECK_PRINT_RET(::close(fd_) < 0, FAILED,
                         "Failed to close I2C bus %d: %s", bus_number_, strerror(errno));
 
+    fd_ = -1;
+
     return SUCCESS;
 }
 

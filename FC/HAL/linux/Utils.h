@@ -18,6 +18,7 @@ public:
     static Utils &getInstance();
 
     void delayMs(uint16_t ms) override;
+    void getTimestamp(std::string &timestamp) override;
 
 private:
     Utils() = default;

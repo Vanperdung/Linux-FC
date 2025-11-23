@@ -19,6 +19,7 @@ public:
     FCReturnCode cleanup();
 
 private:
+    static void periodicGetSampleCallback(void *context);
     FCReturnCode initBackend();
 
     std::unique_ptr<ImuBackend> backend_;

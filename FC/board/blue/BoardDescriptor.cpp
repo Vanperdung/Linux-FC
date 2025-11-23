@@ -14,7 +14,7 @@ const BoardDescriptor &BoardDescriptor::getInstance()
 
         instance.imu.type = ImuDef::Type::MPU9250;
         instance.imu.phy_interface = ImuDef::PhyInterface::I2C;
-        instance.imu.bus_number = ImuDef::BusNumber::BUS0;
+        instance.imu.bus_number = ImuDef::BusNumber::BUS2;
 
         Logger::registerLogFunc([](uint8_t *buffer, uint16_t n) {
             write(STDOUT_FILENO, buffer, n);

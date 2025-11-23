@@ -70,6 +70,7 @@ public:
 
     FCReturnCode start();
     FCReturnCode stop();
+    void wakeup();
 
     FCReturnCode registerSlot(int slot_fd, EpollSlot slot);
     FCReturnCode unregisterSlot(int slot_fd);
@@ -80,6 +81,7 @@ private:
     FCReturnCode removeEvent(int slot_fd);
     
     int fd_;
+    int wakeup_fd_;
     bool poll_should_stop_;
     uint8_t num_registered_slots_;
     std::unordered_map<int, EpollSlot> slot_map_;
